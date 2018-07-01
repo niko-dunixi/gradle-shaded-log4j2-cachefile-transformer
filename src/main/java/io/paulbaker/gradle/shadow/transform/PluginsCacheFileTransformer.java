@@ -23,6 +23,8 @@ import static shadow.org.apache.commons.io.output.ClosedOutputStream.CLOSED_OUTP
  * Modified from the maven equivalent to work with gradle
  *
  * @author Paul Nelson Baker
+ * @see <a href="https://www.linkedin.com/in/paul-n-baker/">LinkedIn</a>
+ * @see <a href="https://github.com/paul-nelson-baker/">GitHub</a>
  * @see <a href="https://github.com/edwgiz/maven-shaded-log4j-transformer">edwgiz/maven-shaded-log4j-transformer</a>
  * @see <a href="https://github.com/edwgiz/maven-shaded-log4j-transformer/blob/master/src/main/java/com/github/edwgiz/mavenShadePlugin/log4j2CacheTransformer/PluginsCacheFileTransformer.java">PluginsCacheFileTransformer.java</a>
  */
