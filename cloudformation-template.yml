@@ -1,0 +1,175 @@
+%YAML 1.2
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Pipeline to build, test, and deploy the supplimentary
+  plugin for Jar shading. This provides the transformer
+  for properly shading log4j's cache file
+
+Parameters:
+  # GitHub Specific Params
+  GitHubPersonalAccessToken:
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Default: '/gradle-shaded-log4j-transformer-pipeline/github-access-token'
+  GitHubOwner:
+    Type: String
+    Default: paul-nelson-baker
+  GitHubRepo:
+    Type: String
+    Default: gradle-shaded-log4j-transformer
+  GitHubBranch:
+    Type: String
+    Default: master
+  # Artifact S3 Params
+  S3ArtifactBucket:
+    Type: String
+    Default: paulbaker-artifacts
+  S3ArtifactDirectory:
+    Type: String
+    Default: ephemeral-codebuild-items
+
+Resources:
+
+  # Roles
+  CodeBuildProjectRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - "codebuild.amazonaws.com"
+            Action: "sts:AssumeRole"
+  CodePipelineAccessRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - "codepipeline.amazonaws.com"
+            Action: "sts:AssumeRole"
+      Path: "/"
+
+  # RolePolices
+  CodeBuildProjectRolePolicy:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      Roles:
+        - "Ref": CodeBuildProjectRole
+      PolicyName: CodeBuildProjectRolePolicy
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action:
+              - "logs:CreateLogStream"
+              - "logs:CreateLogGroup"
+              - "logs:PutLogEvents"
+              - "logs:DescribeLogStreams"
+            Resource:
+              - "arn:aws:logs:*:*:*"
+          - Effect: Allow
+            Action:
+              - "s3:GetObject"
+              - "s3:PutObject"
+              - "s3:DeleteObject"
+            Resource:
+              - "Fn::Join": ["", ["arn:aws:s3:::", !Ref S3ArtifactBucket, "/*"]]
+          - Effect: Allow
+            Action:
+              - "ssm:GetParameters"
+            Resource:
+              - "Fn::Join": ["", ["arn:aws:ssm:", !Ref "AWS::Region", ":", !Ref "AWS::AccountId", ":", "parameter/gradle/publish/*"]]
+  CodePipelineAccessRolePolicy:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      Roles:
+        - "Ref": CodePipelineAccessRole
+      PolicyName: CodePipelineAccessRolePolicy
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action:
+              - "s3:ListBucket"
+            Resource:
+              - "Fn::Join": ["", ["arn:aws:s3:::", !Ref S3ArtifactBucket]]
+          - Effect: Allow
+            Action:
+              - "s3:GetObject"
+              - "s3:PutObject"
+              - "s3:DeleteObject"
+            Resource:
+              - "Fn::Join": ["", ["arn:aws:s3:::", !Ref S3ArtifactBucket, "/*"]]
+          - Effect: Allow
+            Action:
+              - "codebuild:StartBuild"
+              - "codebuild:BatchGetBuilds"
+            Resource: "*"
+
+  # The actual stuff:
+
+  # The build step for our Kotlin library
+  CodeBuildProject:
+    Type: "AWS::CodeBuild::Project"
+    Properties:
+      Name: !Ref GitHubRepo
+      Description: !Join ["", ["The codebuild project that builds the JVM artifacts for ", !Ref GitHubRepo]]
+      BadgeEnabled: false
+      TimeoutInMinutes: 5
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/java:openjdk-8
+      ServiceRole: !Ref CodeBuildProjectRole
+      Source:
+        Type: CODEPIPELINE
+      Artifacts:
+        Type: CODEPIPELINE
+
+  # The full pipeline that incorporates all this stuff.
+  CodePipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: !Join ["-", [!Ref GitHubRepo, "pipeline"]]
+      ArtifactStore:
+        Type: S3
+        Location:
+          !Ref S3ArtifactBucket
+      RoleArn:
+        !GetAtt [CodePipelineAccessRole, "Arn"]
+      Stages:
+        - Name: !Join ["-", [!Ref GitHubRepo, "source"]]
+          Actions:
+            - Name: Source
+              ActionTypeId:
+                Category: Source
+                Owner: ThirdParty
+                Version: 1
+                Provider: GitHub
+              Configuration:
+                Owner: !Ref GitHubOwner
+                Repo: !Ref GitHubRepo
+                Branch: !Ref GitHubBranch
+                OAuthToken: !Ref GitHubPersonalAccessToken
+              OutputArtifacts:
+                - Name: SourceCodeArtifact
+              RunOrder: 1
+        - Name: !Join ["-", [!Ref GitHubRepo, "build-push"]]
+          Actions:
+            - Name: Build
+              InputArtifacts:
+                  - Name: SourceCodeArtifact
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Version: 1
+                Provider: CodeBuild
+              Configuration:
+                ProjectName: !Ref GitHubRepo
+              OutputArtifacts:
+                  - Name: JavaBinaryArtifact
+              RunOrder: 2
