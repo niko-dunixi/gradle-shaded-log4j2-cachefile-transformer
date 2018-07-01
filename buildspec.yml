@@ -19,4 +19,4 @@ phases:
   post_build:
     commands:
       - '[ "${CODEBUILD_BUILD_SUCCEEDING}" -eq 1 ] && echo "Build suceeded!" || exit 1'
-      - echo "GREAT! Now we need to figure out how to release our code to plugins.gradle!"
+      - ./gradlew publishPlugins

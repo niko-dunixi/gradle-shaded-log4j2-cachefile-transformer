@@ -1,10 +1,24 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.gradle.publish:plugin-publish-plugin:0.9.10"
+    }
+}
 plugins {
+    id "com.gradle.plugin-publish" version "0.9.10"
     id "com.github.johnrengelman.shadow" version "2.0.4"
     id 'java'
     id 'java-gradle-plugin'
     id 'idea'
     id 'eclipse'
 }
+
+group 'io.paulbaker.gradle'
+version "${version != 'unspecified' ? version : '1.0-SNAPSHOT'}"
 
 // Setting target compatibility to Java 7 on purpose.
 // This is to match the compatibility restrictions of
@@ -41,6 +55,7 @@ dependencies {
     def shadowPluginVersion = '2.0.4'
     def log4jCoreVersion = '2.11.0'
     implementation "com.github.jengelman.gradle.plugins:shadow:$shadowPluginVersion"
+    compile gradleApi()
     compile "org.apache.logging.log4j:log4j-core:$log4jCoreVersion"
     // testing
     testCompile "org.junit.jupiter:junit-jupiter-api:5.2.0"
@@ -58,4 +73,18 @@ tasks.build.dependsOn tasks.shadowJar
 wrapper {
     gradleVersion = '4.8'
     distributionType = Wrapper.DistributionType.ALL
+}
+
+pluginBundle {
+    website = "https://github.com/paul-nelson-baker/gradle-shaded-log4j-transformer"
+    vcsUrl = "git@github.com:paul-nelson-baker/gradle-shaded-log4j-transformer.git"
+    description = "Pipeline to build, test, and deploy the supplimentary plugin for Jar shading. This provides the transformer for properly shading log4j's cache file"
+    tags = ['shade', 'log4j', 'transform']
+
+    plugins {
+        shadowTransformerPlugin {
+            id = 'io.paulbaker.shade-log4j-transformer'
+            displayName = 'Shaded Log4j Transformer'
+        }
+    }
 }
