@@ -1,7 +1,9 @@
 plugins {
+    id "com.github.johnrengelman.shadow" version "2.0.4"
     id 'java'
     id 'java-gradle-plugin'
     id 'idea'
+    id 'eclipse'
 }
 
 // Setting target compatibility to Java 7 on purpose.
@@ -29,6 +31,12 @@ repositories {
     }
 }
 
+jar.enabled = false
+
+shadowJar {
+    classifier = ''
+}
+
 dependencies {
     def shadowPluginVersion = '2.0.4'
     def log4jCoreVersion = '2.11.0'
@@ -39,6 +47,13 @@ dependencies {
     testCompile "org.junit.jupiter:junit-jupiter-engine:5.2.0"
     testCompile "org.junit.jupiter:junit-jupiter-params:5.2.0"
 }
+
+task downloadDependencies(type: Exec) {
+    dependsOn configurations.testRuntime
+    commandLine 'echo', 'Downloaded all dependencies'
+}
+
+tasks.build.dependsOn tasks.shadowJar
 
 wrapper {
     gradleVersion = '4.8'
