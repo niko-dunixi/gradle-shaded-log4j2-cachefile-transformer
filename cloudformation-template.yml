@@ -16,7 +16,7 @@ Parameters:
     Default: paul-nelson-baker
   GitHubRepo:
     Type: String
-    Default: gradle-shaded-log4j-transformer
+    Default: gradle-shaded-log4j2-cachefile-transformer
   GitHubBranch:
     Type: String
     Default: master
