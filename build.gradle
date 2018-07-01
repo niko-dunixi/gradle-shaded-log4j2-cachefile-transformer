@@ -14,15 +14,18 @@ sourceCompatibility = 1.8
 // the shadow plugin itself which is Java 7+
 targetCompatibility = 1.7
 
+repositories {
+    jcenter()
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
+}
+
 dependencies {
     def shadowPluginVersion = '2.0.4'
     def log4jCoreVersion = '2.11.0'
     compile "com.github.jengelman.gradle.plugins:shadow:$shadowPluginVersion"
     compile "org.apache.logging.log4j:log4j-core:$log4jCoreVersion"
-}
-
-repositories {
-    mavenCentral()
 }
 
 wrapper {
