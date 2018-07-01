@@ -46,8 +46,8 @@ public class Log4j2PluginsCacheFileTransformer implements Transformer {
 
     @Override
     public boolean canTransformResource(FileTreeElement element) {
-        boolean canTransformResource = nonNull(element) && element.getPath().equals(PLUGIN_CACHE_FILE);
-        log.info(String.format("Can transform \"%s\"? %s", element != null ? element.getFile() : null, canTransformResource));
+        boolean canTransformResource = nonNull(element) && PLUGIN_CACHE_FILE.equals(element.getName());
+        log.info(String.format("Can transform \"%s\"? %s", element != null ? element.getName() : null, canTransformResource));
         return canTransformResource;
     }
 
