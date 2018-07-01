@@ -15,10 +15,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import static java.util.Objects.nonNull;
 import static org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor.PLUGIN_CACHE_FILE;
 import static shadow.org.apache.commons.io.output.ClosedOutputStream.CLOSED_OUTPUT_STREAM;
 
@@ -102,37 +99,46 @@ public class PluginsCacheFileTransformer implements Transformer {
 
     private void relocatePlugins(PluginCache pluginCache) {
         // Dive into PluginCache and get all the plugin entries
-        List<PluginEntry> pluginEntries = pluginCache.getAllCategories().values().stream()
-                .flatMap(categoryValues -> categoryValues.values().stream())
-                .collect(Collectors.toList());
+        for (Map<String, PluginEntry> currentValue : pluginCache.getAllCategories().values()) {
+            pluginEntryLoop:
+            for (PluginEntry currentPluginEntry : currentValue.values()) {
+                String className = currentPluginEntry.getClassName();
+                RelocateClassContext relocateClassContext = new RelocateClassContext(className);
+                for (Relocator currentRelocator : relocators) {
+                    // If we have a relocator that can relocate our current entry...
+                    boolean canRelocateClass = currentRelocator.canRelocateClass(relocateClassContext);
+                    if (canRelocateClass) {
+                        // Then we perform that relocation and update the plugin entry to reflect the new value.
+                        String relocatedClassName = currentRelocator.relocateClass(relocateClassContext);
+                        currentPluginEntry.setClassName(relocatedClassName);
+                        continue pluginEntryLoop;
+                    }
+                }
+            }
+        }
+
         // Iterate over all plugin entries
-        pluginEntries.forEach(pluginEntry -> {
-            String className = pluginEntry.getClassName();
-            RelocateClassContext relocateClassContext = new RelocateClassContext(className);
-            // If we have a relocator that can relocate our current entry...
-            Optional<Relocator> validRelocator = relocators.stream()
-                    .filter(relocator -> relocator.canRelocateClass(relocateClassContext))
-                    .findFirst();
-            // Then we perform that relocation and update the plugin entry to reflect the new value.
-            validRelocator.ifPresent(relocator -> {
-                String relocatedClass = relocator.relocateClass(relocateClassContext);
-                pluginEntry.setClassName(relocatedClass);
-            });
-        });
     }
 
     private Enumeration<URL> getUrlEnumeration() {
-        Function<File, URL> fileToURL = (File file) -> {
-            try {
-                return file.toURI().toURL();
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
-            }
-        };
-        List<URL> urls = temporaryFiles.stream()
-                .map(fileToURL)
-                .collect(Collectors.toList());
+        List<URL> urls = new ArrayList<>();
+        for (File currentTemporaryFile : temporaryFiles) {
+            URL url = fromFile(currentTemporaryFile);
+            urls.add(url);
+        }
         return Collections.enumeration(urls);
+    }
+
+    private URL fromFile(File file) {
+        try {
+            return file.toURI().toURL();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private boolean nonNull(Object object) {
+        return object != null;
     }
 
     /**

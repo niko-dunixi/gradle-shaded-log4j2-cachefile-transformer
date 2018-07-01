@@ -3,16 +3,17 @@ plugins {
     id 'java-gradle-plugin'
     id 'idea'
 }
-idea {
-    project {
-        languageLevel = '1.8'
-    }
-}
-sourceCompatibility = 1.8
+
 // Setting target compatibility to Java 7 on purpose.
 // This is to match the compatibility restrictions of
 // the shadow plugin itself which is Java 7+
+sourceCompatibility = 1.7
 targetCompatibility = 1.7
+idea {
+    project {
+        languageLevel = '1.7'
+    }
+}
 
 test {
     useJUnitPlatform()
