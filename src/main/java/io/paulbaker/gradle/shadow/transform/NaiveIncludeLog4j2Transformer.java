@@ -15,7 +15,7 @@ public class NaiveIncludeLog4j2Transformer implements Plugin<Project> {
 
     @Override
     public void apply(Project target) {
-        Set<Task> shadowJarTasks = target.getTasksByName("shadowJar", false);
+        Set<Task> shadowJarTasks = target.getTasksByName("shadowJar", true);
         for (Task currentTask : shadowJarTasks) {
             currentTask.setProperty("transform", PluginsCacheFileTransformer.class);
         }
