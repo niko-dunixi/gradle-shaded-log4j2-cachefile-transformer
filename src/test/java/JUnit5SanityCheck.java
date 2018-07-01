@@ -7,6 +7,10 @@ import org.junit.jupiter.api.Test;
 
 /**
  * JUnit 5 can be touchy if you don't set it up correctly
+ *
+ * @author Paul Nelson Baker
+ * @see <a href="https://www.linkedin.com/in/paul-n-baker/">LinkedIn</a>
+ * @see <a href="https://github.com/paul-nelson-baker/">GitHub</a>
  */
 public class JUnit5SanityCheck {
 
