@@ -76,7 +76,12 @@ public class PluginsCacheFileTransformer implements Transformer {
 
     @Override
     public boolean hasTransformedResource() {
-        return temporaryFiles.size() > 1 || (!temporaryFiles.isEmpty() && !relocators.isEmpty());
+        // This functionality matches the original plugin, however, I'm not clear what
+        // the exact logic is. From what I can tell temporaryFiles should be never be empty
+        // if anything has been performed.
+        boolean transformedMultipleFiles = temporaryFiles.size() > 1;
+        boolean hasMultipleFilesAndRelocators = !temporaryFiles.isEmpty() && !relocators.isEmpty();
+        return transformedMultipleFiles || hasMultipleFilesAndRelocators;
     }
 
     @Override
