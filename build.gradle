@@ -69,6 +69,7 @@ task downloadDependencies(type: Exec) {
 }
 
 tasks.build.dependsOn tasks.shadowJar
+tasks.publishPlugins.dependsOn tasks.shadowJar
 
 wrapper {
     gradleVersion = '4.8'
