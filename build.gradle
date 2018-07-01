@@ -17,7 +17,7 @@ plugins {
     id 'eclipse'
 }
 
-group 'io.paulbaker.gradle'
+group 'io.paulbaker'
 version "${version != 'unspecified' ? version : '1.0-SNAPSHOT'}"
 
 // Setting target compatibility to Java 7 on purpose.
@@ -53,9 +53,9 @@ shadowJar {
 
 dependencies {
     def shadowPluginVersion = '2.0.4'
-    def log4jCoreVersion = '2.11.0'
     implementation "com.github.jengelman.gradle.plugins:shadow:$shadowPluginVersion"
     compile gradleApi()
+    def log4jCoreVersion = '2.11.0'
     compile "org.apache.logging.log4j:log4j-core:$log4jCoreVersion"
     // testing
     testCompile "org.junit.jupiter:junit-jupiter-api:5.2.0"
