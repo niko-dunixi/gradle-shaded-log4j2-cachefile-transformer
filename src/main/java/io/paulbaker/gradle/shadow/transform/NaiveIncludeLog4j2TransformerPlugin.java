@@ -33,7 +33,7 @@ public class NaiveIncludeLog4j2TransformerPlugin implements Plugin<Project> {
             List<Transformer> transformers = currentTask.getTransformers();
             boolean hasLog4j2Transformer = hasLog4j2Transformer(transformers);
             if (!hasLog4j2Transformer) {
-                log.info("Appending Lo4j2PluginsCacheFileTransformer to shadowJar task");
+                log.info("Appending new Lo4j2PluginsCacheFileTransformer to shadowJar task");
                 transformers.add(new Log4j2PluginsCacheFileTransformer());
             }
         }
@@ -51,7 +51,7 @@ public class NaiveIncludeLog4j2TransformerPlugin implements Plugin<Project> {
                 shadowJarTasks.add((ShadowJar) currentTask);
             }
         }
-        log.info(String.format("Found [%02d] shadowJar tasks", shadowJarTasks.size()));
+        log.info(String.format("Found [%d] shadowJar tasks", shadowJarTasks.size()));
         return shadowJarTasks;
     }
 
@@ -65,6 +65,6 @@ public class NaiveIncludeLog4j2TransformerPlugin implements Plugin<Project> {
                 return true;
             }
         }
-        return true;
+        return false;
     }
 }
