@@ -24,23 +24,22 @@ public class PluginsCacheFileTransformerTests {
     private final URL PLUGIN_URL = getResourceUrl(PLUGIN_CACHE_FILE);
 
     private static URL getResourceUrl(String resource) {
-        return PluginsCacheFileTransformerTests.class.getClass().getClassLoader().getResource(resource);
+        return PluginsCacheFileTransformerTests.class.getClassLoader().getResource(resource);
     }
 
     private static InputStream getResourceStream(String resource) {
-        return PluginsCacheFileTransformerTests.class.getClass().getClassLoader().getResourceAsStream(resource);
+        return PluginsCacheFileTransformerTests.class.getClassLoader().getResourceAsStream(resource);
     }
 
     @Test
     public void test() {
         PluginsCacheFileTransformer transformer = new PluginsCacheFileTransformer();
-        final InputStream inputStream = getResourceStream(PLUGIN_CACHE_FILE);
-        transformer.transform(new TransformerContext(PLUGIN_CACHE_FILE, inputStream, null));
+        transformer.transform(new TransformerContext(PLUGIN_CACHE_FILE, getResourceStream(PLUGIN_CACHE_FILE), null));
         assertFalse(transformer.hasTransformedResource());
 
         List<Relocator> relocators = new ArrayList<>();
         relocators.add(new SimpleRelocator(null, null, null, null));
-        new TransformerContext(PLUGIN_CACHE_FILE, inputStream, relocators);
+        transformer.transform(new TransformerContext(PLUGIN_CACHE_FILE, getResourceStream(PLUGIN_CACHE_FILE), relocators));
         assertTrue(transformer.hasTransformedResource());
     }
 }
