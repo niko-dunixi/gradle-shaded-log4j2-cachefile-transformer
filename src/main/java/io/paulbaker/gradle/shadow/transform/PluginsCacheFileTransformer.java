@@ -7,18 +7,20 @@ import shadow.org.codehaus.plexus.util.IOUtil;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import static java.util.Objects.nonNull;
 import static org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor.PLUGIN_CACHE_FILE;
 
 /**
- * Modified from com.github.edwgiz.mavenShadePlugin.log4j2CacheTransformer.PluginsCacheFileTransformer
+ * Modified from the maven equivalent to work with gradle
  *
  * @author Paul Nelson Baker
+ * @see <a href="https://github.com/edwgiz/maven-shaded-log4j-transformer/blob/master/src/main/java/com/github/edwgiz/mavenShadePlugin/log4j2CacheTransformer/PluginsCacheFileTransformer.java">PluginsCacheFileTransformer</a>
  */
 public class PluginsCacheFileTransformer implements Transformer {
 
-    private final ArrayList<File> temporaryFiles;
+    private final List<File> temporaryFiles;
 
     public PluginsCacheFileTransformer() {
         temporaryFiles = new ArrayList<>();
@@ -32,7 +34,6 @@ public class PluginsCacheFileTransformer implements Transformer {
     @Override
     public void transform(TransformerContext context) {
         File tempFile = File.createTempFile("Log4j2Plugins", "dat");
-        IOUtil.
         IOUtil.copy();
     }
 
