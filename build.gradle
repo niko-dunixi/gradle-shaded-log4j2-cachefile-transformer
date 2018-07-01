@@ -78,7 +78,7 @@ wrapper {
 pluginBundle {
     website = "https://github.com/paul-nelson-baker/gradle-shaded-log4j-transformer"
     vcsUrl = "git@github.com:paul-nelson-baker/gradle-shaded-log4j-transformer.git"
-    description = "Pipeline to build, test, and deploy the supplimentary plugin for Jar shading. This provides the transformer for properly shading log4j's cache file"
+    description = "Supplimentary transformer for Jar shading. This provides the transformer for properly shading log4j's cache file"
     tags = ['shade', 'log4j', 'transform']
 
     plugins {
