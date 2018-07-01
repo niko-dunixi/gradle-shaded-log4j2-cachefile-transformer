@@ -7,6 +7,8 @@ import com.github.jengelman.gradle.plugins.shadow.transformers.Transformer;
 import com.github.jengelman.gradle.plugins.shadow.transformers.TransformerContext;
 import org.apache.logging.log4j.core.config.plugins.processor.PluginCache;
 import org.apache.logging.log4j.core.config.plugins.processor.PluginEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import shadow.org.apache.commons.io.IOUtils;
 import shadow.org.apache.commons.io.output.ProxyOutputStream;
 import shadow.org.apache.tools.zip.ZipEntry;
@@ -31,10 +33,12 @@ import static shadow.org.apache.commons.io.output.ClosedOutputStream.CLOSED_OUTP
  */
 public class Log4j2PluginsCacheFileTransformer implements Transformer {
 
+    private final Logger log;
     private final List<File> temporaryFiles;
     private final List<Relocator> relocators;
 
     public Log4j2PluginsCacheFileTransformer() {
+        log = LoggerFactory.getLogger(this.getClass());
         temporaryFiles = new ArrayList<>();
         relocators = new ArrayList<>();
     }

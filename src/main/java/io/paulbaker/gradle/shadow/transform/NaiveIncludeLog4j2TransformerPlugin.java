@@ -5,6 +5,8 @@ import com.github.jengelman.gradle.plugins.shadow.transformers.Transformer;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -17,13 +19,21 @@ import java.util.Set;
  */
 public class NaiveIncludeLog4j2TransformerPlugin implements Plugin<Project> {
 
+    private final Logger log;
+
+    public NaiveIncludeLog4j2TransformerPlugin() {
+        log = LoggerFactory.getLogger(this.getClass());
+    }
+
     @Override
     public void apply(Project project) {
+        log.info("Looking at project: " + project.getName());
         Set<ShadowJar> shadowJarTasks = getShadowJarTasks(project);
         for (ShadowJar currentTask : shadowJarTasks) {
             List<Transformer> transformers = currentTask.getTransformers();
             boolean hasLog4j2Transformer = hasLog4j2Transformer(transformers);
             if (!hasLog4j2Transformer) {
+                log.info("Appending Lo4j2PluginsCacheFileTransformer to shadowJar task");
                 transformers.add(new Log4j2PluginsCacheFileTransformer());
             }
         }
@@ -41,6 +51,7 @@ public class NaiveIncludeLog4j2TransformerPlugin implements Plugin<Project> {
                 shadowJarTasks.add((ShadowJar) currentTask);
             }
         }
+        log.info("Found [%02d] shadowJar tasks", shadowJarTasks.size());
         return shadowJarTasks;
     }
 
