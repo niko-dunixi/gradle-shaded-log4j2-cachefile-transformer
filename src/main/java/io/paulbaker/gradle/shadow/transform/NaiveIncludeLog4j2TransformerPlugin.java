@@ -51,7 +51,7 @@ public class NaiveIncludeLog4j2TransformerPlugin implements Plugin<Project> {
                 shadowJarTasks.add((ShadowJar) currentTask);
             }
         }
-        log.info("Found [%02d] shadowJar tasks", shadowJarTasks.size());
+        log.info(String.format("Found [%02d] shadowJar tasks", shadowJarTasks.size()));
         return shadowJarTasks;
     }
 
