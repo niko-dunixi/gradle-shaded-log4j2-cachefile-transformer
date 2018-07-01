@@ -27,22 +27,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @see <a href="https://www.linkedin.com/in/paul-n-baker/">LinkedIn</a>
  * @see <a href="https://github.com/paul-nelson-baker/">GitHub</a>
  */
-public class PluginsCacheFileTransformerTests {
+public class Log4j2PluginsCacheFileTransformerTests {
 
     private final URL PLUGIN_URL = getResourceUrl(PLUGIN_CACHE_FILE);
-    private PluginsCacheFileTransformer transformer;
+    private Log4j2PluginsCacheFileTransformer transformer;
 
     private static URL getResourceUrl(String resource) {
-        return PluginsCacheFileTransformerTests.class.getClassLoader().getResource(resource);
+        return Log4j2PluginsCacheFileTransformerTests.class.getClassLoader().getResource(resource);
     }
 
     private static InputStream getResourceStream(String resource) {
-        return PluginsCacheFileTransformerTests.class.getClassLoader().getResourceAsStream(resource);
+        return Log4j2PluginsCacheFileTransformerTests.class.getClassLoader().getResourceAsStream(resource);
     }
 
     @BeforeEach
     public void setupPluginCacheFileTransformer() {
-        transformer = new PluginsCacheFileTransformer();
+        transformer = new Log4j2PluginsCacheFileTransformer();
     }
 
     @Test

@@ -58,9 +58,10 @@ dependencies {
     def log4jCoreVersion = '2.11.0'
     compile "org.apache.logging.log4j:log4j-core:$log4jCoreVersion"
     // testing
-    testCompile "org.junit.jupiter:junit-jupiter-api:5.2.0"
-    testCompile "org.junit.jupiter:junit-jupiter-engine:5.2.0"
-    testCompile "org.junit.jupiter:junit-jupiter-params:5.2.0"
+    def jupiterVersion = '5.2.0'
+    testCompile "org.junit.jupiter:junit-jupiter-api:${jupiterVersion}"
+    testCompile "org.junit.jupiter:junit-jupiter-engine:${jupiterVersion}"
+    testCompile "org.junit.jupiter:junit-jupiter-params:${jupiterVersion}"
 }
 
 task downloadDependencies(type: Exec) {
@@ -81,7 +82,7 @@ gradlePlugin {
         shadowTransformerPlugin {
             id = "${project.group}.shade-log4j-transformer"
             version = project.version
-            implementationClass = 'io.paulbaker.gradle.shadow.transform.NaiveIncludeLog4j2Transformer'
+            implementationClass = 'io.paulbaker.gradle.shadow.transform.NaiveIncludeLog4j2TransformerPlugin'
         }
     }
 }

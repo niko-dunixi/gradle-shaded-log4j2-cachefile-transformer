@@ -29,12 +29,12 @@ import static shadow.org.apache.commons.io.output.ClosedOutputStream.CLOSED_OUTP
  * @see <a href="https://github.com/edwgiz/maven-shaded-log4j-transformer">edwgiz/maven-shaded-log4j-transformer</a>
  * @see <a href="https://github.com/edwgiz/maven-shaded-log4j-transformer/blob/master/src/main/java/com/github/edwgiz/mavenShadePlugin/log4j2CacheTransformer/PluginsCacheFileTransformer.java">PluginsCacheFileTransformer.java</a>
  */
-public class PluginsCacheFileTransformer implements Transformer {
+public class Log4j2PluginsCacheFileTransformer implements Transformer {
 
     private final List<File> temporaryFiles;
     private final List<Relocator> relocators;
 
-    public PluginsCacheFileTransformer() {
+    public Log4j2PluginsCacheFileTransformer() {
         temporaryFiles = new ArrayList<>();
         relocators = new ArrayList<>();
     }
