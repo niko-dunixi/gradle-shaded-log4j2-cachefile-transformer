@@ -45,7 +45,9 @@ public class Log4j2PluginsCacheFileTransformer implements Transformer {
 
     @Override
     public boolean canTransformResource(org.gradle.api.file.FileTreeElement element) {
-        return nonNull(element) && element.getPath().equals(PLUGIN_CACHE_FILE);
+        boolean canTransformResource = nonNull(element) && element.getPath().equals(PLUGIN_CACHE_FILE);
+        log.info(String.format("Can transform \"%s\"? %s", element != null ? element.getFile() : null, canTransformResource));
+        return canTransformResource;
     }
 
     @Override
@@ -56,6 +58,11 @@ public class Log4j2PluginsCacheFileTransformer implements Transformer {
         copyStreamToFile(inputStream, tempFile);
         List<Relocator> relocators = context.getRelocators();
         if (nonNull(relocators)) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (Relocator relocator : relocators) {
+                stringBuilder.append(relocator).append(',').append(' ');
+            }
+            log.info("Working with new Relocators: " + stringBuilder.toString());
             this.relocators.addAll(relocators);
         }
     }
@@ -63,6 +70,7 @@ public class Log4j2PluginsCacheFileTransformer implements Transformer {
     private File createTemporaryFile() {
         try {
             File tempFile = File.createTempFile("Log4j2Plugins", "dat");
+            log.info("Creating temporary file: " + tempFile);
             tempFile.deleteOnExit();
             return tempFile;
         } catch (IOException e) {
@@ -84,8 +92,11 @@ public class Log4j2PluginsCacheFileTransformer implements Transformer {
         // the exact logic is. From what I can tell temporaryFiles should be never be empty
         // if anything has been performed.
         boolean transformedMultipleFiles = temporaryFiles.size() > 1;
-        boolean hasMultipleFilesAndRelocators = !temporaryFiles.isEmpty() && !relocators.isEmpty();
-        return transformedMultipleFiles || hasMultipleFilesAndRelocators;
+        boolean hasAtLeastOneFileAndRelocator = !temporaryFiles.isEmpty() && !relocators.isEmpty();
+        // Logging
+        boolean hasTransformedResources = transformedMultipleFiles || hasAtLeastOneFileAndRelocator;
+        log.info("HasTransformedResources: " + hasTransformedResources);
+        return hasTransformedResources;
     }
 
     @Override
@@ -127,10 +138,13 @@ public class Log4j2PluginsCacheFileTransformer implements Transformer {
 
     private Enumeration<URL> getUrlEnumeration() {
         List<URL> urls = new ArrayList<>();
+        StringBuilder stringBuilder = new StringBuilder();
         for (File currentTemporaryFile : temporaryFiles) {
             URL url = fromFile(currentTemporaryFile);
             urls.add(url);
+            stringBuilder.append(url).append(',').append(' ');
         }
+        log.info("Resource URLs: " + stringBuilder.toString());
         return Collections.enumeration(urls);
     }
 
