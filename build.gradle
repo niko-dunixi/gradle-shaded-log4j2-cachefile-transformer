@@ -75,6 +75,16 @@ wrapper {
     distributionType = Wrapper.DistributionType.ALL
 }
 
+gradlePlugin {
+    plugins {
+        shadowTransformerPlugin {
+            id = "${project.group}.shade-log4j-transformer"
+            version = project.version
+            implementationClass = 'io.paulbaker.gradle.shadow.transform.NoopPlugin'
+        }
+    }
+}
+
 pluginBundle {
     website = "https://github.com/paul-nelson-baker/gradle-shaded-log4j-transformer"
     vcsUrl = "git@github.com:paul-nelson-baker/gradle-shaded-log4j-transformer.git"
@@ -83,7 +93,7 @@ pluginBundle {
 
     plugins {
         shadowTransformerPlugin {
-            id = 'io.paulbaker.shade-log4j-transformer'
+            id = "${project.group}.shade-log4j-transformer"
             displayName = 'Shaded Log4j Transformer'
         }
     }
