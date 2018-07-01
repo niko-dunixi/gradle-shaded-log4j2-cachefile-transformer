@@ -90,13 +90,14 @@ gradlePlugin {
 pluginBundle {
     website = "https://github.com/paul-nelson-baker/gradle-shaded-log4j2-cachefile-transformer"
     vcsUrl = "git@github.com:paul-nelson-baker/gradle-shaded-log4j2-cachefile-transformer.git"
-    description = "Supplimentary transformer for Jar shading. This provides the transformer for properly shading log4j's cache files."
-    tags = ['shade', 'log4j', 'transform']
+    description = "Supplimentary transformer for Jar shading. This provides the transformer for properly shading " +
+            "log4j's cachefiles. Gradle equivalent to Maven's https://github.com/edwgiz/maven-shaded-log4j-transformer"
+    tags = ['shade', 'log4j2', 'transform']
 
     plugins {
         shadowTransformerPlugin {
             id = "${project.group}.shade-log4j-transformer"
-            displayName = 'Shaded Log4j Cachefile Transformer'
+            displayName = 'Shaded Log4j2 Cachefile Transformer'
         }
     }
 }
