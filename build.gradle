@@ -21,7 +21,6 @@ dependencies {
     compile "org.apache.logging.log4j:log4j-core:$log4jCoreVersion"
 }
 
-// In this section you declare where to find the dependencies of your project
 repositories {
     mavenCentral()
 }
