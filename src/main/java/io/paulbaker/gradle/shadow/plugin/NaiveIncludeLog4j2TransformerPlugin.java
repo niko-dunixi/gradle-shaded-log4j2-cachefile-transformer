@@ -1,7 +1,8 @@
-package io.paulbaker.gradle.shadow.transform;
+package io.paulbaker.gradle.shadow.plugin;
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar;
 import com.github.jengelman.gradle.plugins.shadow.transformers.Transformer;
+import io.paulbaker.gradle.shadow.transform.Log4j2PluginsCacheFileTransformer;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -17,6 +18,7 @@ import java.util.Set;
  * @see <a href="https://www.linkedin.com/in/paul-n-baker/">LinkedIn</a>
  * @see <a href="https://github.com/paul-nelson-baker/">GitHub</a>
  */
+@SuppressWarnings("ALL")
 public class NaiveIncludeLog4j2TransformerPlugin implements Plugin<Project> {
 
     private final Logger log;

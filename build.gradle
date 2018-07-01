@@ -82,7 +82,7 @@ gradlePlugin {
         shadowTransformerPlugin {
             id = "${project.group}.shade-log4j-transformer"
             version = project.version
-            implementationClass = 'io.paulbaker.gradle.shadow.transform.NaiveIncludeLog4j2TransformerPlugin'
+            implementationClass = 'io.paulbaker.gradle.shadow.plugin.NaiveIncludeLog4j2TransformerPlugin'
         }
     }
 }
