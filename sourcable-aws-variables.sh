@@ -6,7 +6,7 @@
 # Set the variables
 AWS_REGION=us-west-2
 AWS_PROFILE=paulbaker
-PIPELINE_NAME=gradle-shaded-log4j-transformer
+PIPELINE_NAME=gradle-shaded-log4j2-cachefile-transformer
 # Export them so the terminal you're currently using has access to these values.
 export AWS_REGION
 export AWS_PROFILE
