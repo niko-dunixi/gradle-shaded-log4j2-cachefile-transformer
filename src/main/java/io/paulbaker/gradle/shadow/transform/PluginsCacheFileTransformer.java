@@ -96,15 +96,20 @@ public class PluginsCacheFileTransformer implements Transformer {
     }
 
     private void relocatePlugins(PluginCache pluginCache) {
+        // Dive into PluginCache and get all the plugin entries
         List<PluginEntry> pluginEntries = pluginCache.getAllCategories().values().stream()
                 .flatMap(categoryValues -> categoryValues.values().stream())
                 .collect(Collectors.toList());
-
+        // Iterate over all plugin entries
         pluginEntries.forEach(pluginEntry -> {
             String className = pluginEntry.getClassName();
             RelocateClassContext relocateClassContext = new RelocateClassContext(className);
-            Optional<Relocator> first = relocators.stream().filter(relocator -> relocator.canRelocateClass(relocateClassContext)).findFirst();
-            first.ifPresent(relocator -> {
+            // If we have a relocator that can relocate our current entry...
+            Optional<Relocator> validRelocator = relocators.stream()
+                    .filter(relocator -> relocator.canRelocateClass(relocateClassContext))
+                    .findFirst();
+            // Then we perform that relocation and update the plugin entry to reflect the new value.
+            validRelocator.ifPresent(relocator -> {
                 String relocatedClass = relocator.relocateClass(relocateClassContext);
                 pluginEntry.setClassName(relocatedClass);
             });
