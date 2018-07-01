@@ -1,5 +1,6 @@
 package io.paulbaker.gradle.shadow.transform;
 
+import com.github.jengelman.gradle.plugins.shadow.ShadowStats;
 import com.github.jengelman.gradle.plugins.shadow.relocation.RelocateClassContext;
 import com.github.jengelman.gradle.plugins.shadow.relocation.Relocator;
 import com.github.jengelman.gradle.plugins.shadow.transformers.Transformer;
@@ -105,7 +106,7 @@ public class PluginsCacheFileTransformer implements Transformer {
             pluginEntryLoop:
             for (PluginEntry currentPluginEntry : currentValue.values()) {
                 String className = currentPluginEntry.getClassName();
-                RelocateClassContext relocateClassContext = new RelocateClassContext(className);
+                RelocateClassContext relocateClassContext = new RelocateClassContext(className, new ShadowStats());
                 for (Relocator currentRelocator : relocators) {
                     // If we have a relocator that can relocate our current entry...
                     boolean canRelocateClass = currentRelocator.canRelocateClass(relocateClassContext);
@@ -118,8 +119,6 @@ public class PluginsCacheFileTransformer implements Transformer {
                 }
             }
         }
-
-        // Iterate over all plugin entries
     }
 
     private Enumeration<URL> getUrlEnumeration() {
