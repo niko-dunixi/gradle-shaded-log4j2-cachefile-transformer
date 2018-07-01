@@ -7,6 +7,7 @@ import com.github.jengelman.gradle.plugins.shadow.transformers.Transformer;
 import com.github.jengelman.gradle.plugins.shadow.transformers.TransformerContext;
 import org.apache.logging.log4j.core.config.plugins.processor.PluginCache;
 import org.apache.logging.log4j.core.config.plugins.processor.PluginEntry;
+import org.gradle.api.file.FileTreeElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import shadow.org.apache.commons.io.IOUtils;
@@ -44,7 +45,7 @@ public class Log4j2PluginsCacheFileTransformer implements Transformer {
     }
 
     @Override
-    public boolean canTransformResource(org.gradle.api.file.FileTreeElement element) {
+    public boolean canTransformResource(FileTreeElement element) {
         boolean canTransformResource = nonNull(element) && element.getPath().equals(PLUGIN_CACHE_FILE);
         log.info(String.format("Can transform \"%s\"? %s", element != null ? element.getFile() : null, canTransformResource));
         return canTransformResource;
