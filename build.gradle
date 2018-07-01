@@ -96,7 +96,7 @@ pluginBundle {
 
     plugins {
         shadowTransformerPlugin {
-            id = "${project.group}.shade-log4j-transformer"
+            id = "${project.group}.shaded-log4j2-cachefile-transformer"
             displayName = 'Shaded Log4j2 Cachefile Transformer'
         }
     }
