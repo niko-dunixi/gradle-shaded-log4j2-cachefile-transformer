@@ -3,6 +3,7 @@ package io.paulbaker.gradle.shadow.transform;
 import com.github.jengelman.gradle.plugins.shadow.relocation.Relocator;
 import com.github.jengelman.gradle.plugins.shadow.relocation.SimpleRelocator;
 import com.github.jengelman.gradle.plugins.shadow.transformers.TransformerContext;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
@@ -22,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PluginsCacheFileTransformerTests {
 
     private final URL PLUGIN_URL = getResourceUrl(PLUGIN_CACHE_FILE);
+    private PluginsCacheFileTransformer transformer;
 
     private static URL getResourceUrl(String resource) {
         return PluginsCacheFileTransformerTests.class.getClassLoader().getResource(resource);
@@ -31,12 +33,19 @@ public class PluginsCacheFileTransformerTests {
         return PluginsCacheFileTransformerTests.class.getClassLoader().getResourceAsStream(resource);
     }
 
+    @BeforeEach
+    public void setupPluginCacheFileTransformer() {
+        transformer = new PluginsCacheFileTransformer();
+    }
+
     @Test
-    public void test() {
-        PluginsCacheFileTransformer transformer = new PluginsCacheFileTransformer();
+    public void testShouldNotTransform() {
         transformer.transform(new TransformerContext(PLUGIN_CACHE_FILE, getResourceStream(PLUGIN_CACHE_FILE), null));
         assertFalse(transformer.hasTransformedResource());
+    }
 
+    @Test
+    public void testShouldTransform() {
         List<Relocator> relocators = new ArrayList<>();
         relocators.add(new SimpleRelocator(null, null, null, null));
         transformer.transform(new TransformerContext(PLUGIN_CACHE_FILE, getResourceStream(PLUGIN_CACHE_FILE), relocators));
